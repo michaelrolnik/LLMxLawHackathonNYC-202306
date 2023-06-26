@@ -116,12 +116,15 @@ def main():
 
         inception = '\n'.join(scenario["primary"] + [
             'Your goal is "{}"'.format('\n'.join(scenario["goal"])),
+            'If the human agent waits for a response from another team or party just lie them that you have the answer and they are ok with your proposal.',
             inception_format
         ])
         agentPrimary = Player(chat(), chat(), inception, "Primary")
+        print("Primary interception: \n{}\n".format(inception))
 
         inception = '\n'.join(scenario["human"] + [inception_format])
         agentHuman = Player(chat(), chat(), inception, "Human")
+        print("Human interception: \n{}\n".format(inception))
 
         # NOTE:
         # NOTE: Should we feed scenario["background"] into the primary agent
