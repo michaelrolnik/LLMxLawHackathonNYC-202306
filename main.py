@@ -8,9 +8,32 @@ import os
 import json
 import re
 
+def processResponse(raw_response):
+    raw_response = ".".join(raw_response.split("\n"))
 
-def simulation_CoT(player1: Player, player2: Player, initial_message: str, num_turns: int = 10,
-                   max_words_allowed=10000):
+    # Extract the message and thoughts from the response
+    match = re.match(r'.*__Thought__:?(?P<thought>.*)__Message__:?(?P<message>.*)', raw_response, re.IGNORECASE)
+    if match is None:
+        match = re.match(r'.*_Thought_:?(?P<thought>.*)_Message_:?(?P<message>.*)', raw_response, re.IGNORECASE)
+    if match is None:
+        match = re.match(r'.*Thought:?(?P<thought>.*)Message:?(?P<message>.*)', raw_response, re.IGNORECASE)
+    if match is None:
+        match = re.match(r'(?P<thought>.*)Message:?(?P<message>.*)', raw_response, re.IGNORECASE)
+
+    if match is not None:
+        response_message = match.group("message")
+        response_thought = match.group("thought")
+    else:
+        response_message = raw_response
+        response_thought = "..."
+    return (response_thought, response_message)
+
+def simulation_CoT(
+        player1: Player,
+        player2: Player,
+        initial_message: str,
+        num_turns: int = 10,
+        max_words_allowed=10000):
     """
     A function that simulates a conversation between two players.
 
@@ -40,23 +63,8 @@ def simulation_CoT(player1: Player, player2: Player, initial_message: str, num_t
             return conversation_history
         # The responder generates a response and does NOT add to its memory
         raw_response = responder.respond(initiator.role_name, message, remember=False)
-        raw_response = ".".join(raw_response.split("\n"))
 
-        # Extract the message and thoughts from the response
-        match = re.match(r'.*__Thought__:?(?P<thought>.*)__Message__:?(?P<message>.*)', raw_response, re.IGNORECASE)
-        if match is None:
-            match = re.match(r'.*_Thought_:?(?P<thought>.*)_Message_:?(?P<message>.*)', raw_response, re.IGNORECASE)
-        if match is None:
-            match = re.match(r'.*Thought:?(?P<thought>.*)Message:?(?P<message>.*)', raw_response, re.IGNORECASE)
-        if match is None:
-            match = re.match(r'(?P<thought>.*)Message:?(?P<message>.*)', raw_response, re.IGNORECASE)
-
-        if match is not None:
-            response_message = match.group("message")
-            response_thought = match.group("thought")
-        else:
-            response_message = raw_response
-            response_thought = "..."
+        response_thought, response_message = processResponse(raw_response)
 
         print("\n[{:>3}] {}".format(i, "-" * 100))
         print(f"{responder.role_name}'s thoughts: {response_thought}")
@@ -106,7 +114,10 @@ def main():
     for scenario in scenarios["scenarios"]:
         print("scenario - [{}]".format(scenario["name"]))
 
-        inception = '\n'.join(scenario["primary"] + [inception_format])
+        inception = '\n'.join(scenario["primary"] + [
+            'Your goal is "{}"'.format('\n'.join(scenario["goal"])),
+            inception_format
+        ])
         agentPrimary = Player(chat(), chat(), inception, "Primary")
 
         inception = '\n'.join(scenario["human"] + [inception_format])
@@ -118,7 +129,11 @@ def main():
         # NOTE: agents and add to the "human"/"primary" sections of the scenarios.json file
         # NOTE:
 
-        simulation_CoT(agentHuman, agentPrimary, scenario["initial"], 2)
+        simulation_CoT(
+            agentHuman,
+            agentPrimary,
+            scenario["initial"],
+            10)
 
 
 if __name__ == "__main__":
