@@ -1,0 +1,9 @@
+version: '3'
+services:
+  langchain:
+    image: llmx-law
+    command: langchain plus start
+    ports:
+      - "8888:8888"
+    env_file:
+      - .env

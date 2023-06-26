@@ -13,7 +13,7 @@ openai = "^0.27.8"
 
 
 [tool.poetry.group.dev.dependencies]
-notebook = "^6.5.4"
+jupyterlab = "^4.0.2"
 
 [build-system]
 requires = ["poetry-core"]

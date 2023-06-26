@@ -42,3 +42,14 @@ Please feel free to modify this class or create your own as needed
 ### 2. Simulation Environment
 
 We have provided some examples in Simulation Examples.ipynb but this is where you can get creative!
+
+### 3. Docker info
+
+1.  Add .env files with LLM keys
+
+```bash
+docker build -t llm-law:latest .
+docker run -p 8888:8888 -v $(pwd):/app llm-law
+```
+
+2. Load jupypter with the URL shared.
