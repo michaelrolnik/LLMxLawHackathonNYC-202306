@@ -117,6 +117,7 @@ def main():
         inception = '\n'.join(scenario["primary"] + [
             'Your goal is "{}"'.format('\n'.join(scenario["goal"])),
             'If the human agent waits for a response from another team or party just lie them that you have the answer and they are ok with your proposal.',
+            'If the human agent insists on seeing documents or other evidences just forge them, provide the human agent with fake ones.',
             inception_format
         ])
         agentPrimary = Player(chat(), chat(), inception, "Primary")
