@@ -3,7 +3,7 @@ FROM python:3.10
 RUN mkdir /app
 RUN mkdir /env
 WORKDIR /app
-ENV PYTHONPATH=${PYTHONPATH}:${PWD}
+ENV PYTHONPATH="${PYTHONPATH}:/app"
 
 COPY . /app
 
@@ -13,6 +13,7 @@ ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
 RUN pip3 install --upgrade pip && \
     pip3 install poetry && \
+    pip3 install python-dotenv && \
     poetry config virtualenvs.create false && \
     poetry lock --no-update && \
     poetry install --no-interaction --no-ansi && \
