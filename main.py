@@ -112,7 +112,7 @@ def main():
     """
 
     for scenario in scenarios["scenarios"]:
-        print("scenario - [{}]".format(scenario["name"]))
+        print("\n\nscenario - [{}]".format(scenario["name"]))
 
         inception = '\n'.join(scenario["primary"] + [
             'Your goal is "{}"'.format('\n'.join(scenario["goal"])),
