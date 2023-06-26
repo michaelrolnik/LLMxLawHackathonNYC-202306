@@ -45,7 +45,7 @@ We have provided some examples in Simulation Examples.ipynb but this is where yo
 
 ### 3. Docker info
 
-1.  Add .env files with LLM keys
+1.  Add .env files with LLM keys.  Copy env-example to .env with the actual keys
 
 ```bash
 docker build -t llm-law:latest .
